@@ -6,6 +6,7 @@ use AppBundle\Form\LoginForm;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -21,11 +22,16 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      * @var EntityManager
      */
     private $em;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
-    public function __construct(FormFactoryInterface $formFactory, EntityManager $em)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;
+        $this->router = $router;
     }
 
     public function getCredentials(Request $request)
@@ -53,11 +59,22 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // TODO: Implement checkCredentials() method.
+        $password = $credentials['_password'];
+
+        if ($password == 'iliketurtles') {
+            return true;
+        }
+
+        return false;
     }
 
-    protected function getLoginUrl()
+    protected function getLoginUrl() //若login失败，则返回到下列url
     {
-        // TODO: Implement getLoginUrl() method.
+        return $this->router->generate('security_login');
+    }
+
+    protected function getDefaultSuccessRedirectUrl() //若login成功，则返回到下列url
+    {
+        return $this->router->generate('homepage');
     }
 }
