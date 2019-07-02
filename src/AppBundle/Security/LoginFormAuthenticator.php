@@ -3,6 +3,7 @@
 namespace AppBundle\Security;
 
 use AppBundle\Form\LoginForm;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -16,10 +17,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      * @var FormFactoryInterface
      */
     private $formFactory;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
-    public function __construct(FormFactoryInterface $formFactory)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em)
     {
         $this->formFactory = $formFactory;
+        $this->em = $em;
     }
 
     public function getCredentials(Request $request)
@@ -35,12 +41,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $form->handleRequest($request);
         $data = $form->getData();
 
-        return $data;//若返回任何非空数据，Authenticator会继续执行后续方法
+        return $data;//若返回任何非空数据，Authenticator会继续执行后续getUser()方法
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        // TODO: Implement getUser() method.
+        $username = $credentials['_username'];
+        return $this->em->getRepository('AppBundle:User')
+            ->findOneBy(['email' => $username]); //若未找到user，则不会后续执行checkCredentials()方法
     }
 
     public function checkCredentials($credentials, UserInterface $user)
