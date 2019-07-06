@@ -10,6 +10,7 @@ namespace AppBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -17,7 +18,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User implements UserInterface
 {
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -26,6 +26,8 @@ class User implements UserInterface
     private $id;
     /**
      * @ORM\Column(type="string", unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
@@ -36,6 +38,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private $plainPassword;
 
