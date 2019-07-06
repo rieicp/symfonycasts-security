@@ -18,9 +18,7 @@ class GenusAdminController extends Controller
      */
     public function indexAction()
     {
-        if (!$this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException('Get out!');
-        }
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $genuses = $this->getDoctrine()
             ->getRepository('AppBundle:Genus')
