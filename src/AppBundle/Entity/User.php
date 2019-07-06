@@ -101,9 +101,6 @@ class User implements UserInterface
     public function setPlainPassword($plainPassword)
     {
         $this->plainPassword = $plainPassword;
-        // guarantees that the entity loks "dirty" to Doctrine
-        // when changing the plainPassword
-        $this->password = null;
     }
 
     /**
