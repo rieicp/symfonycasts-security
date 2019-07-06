@@ -40,7 +40,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"Registration"})
      */
     private $plainPassword;
 
